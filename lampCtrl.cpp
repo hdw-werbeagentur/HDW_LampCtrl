@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	}
 
 	int devID;
-	int traffic = TL_red;
+	int traffic = TL_none;
 	for (devID = 0; ok && devID < USBcount; devID++)
 	{
 		if (traffic == TL_none)
