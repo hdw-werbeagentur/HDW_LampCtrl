@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 	int ok = 1;
 	int USBcount = 1;
 	int state = -1;
+	int traffic = TL_none;
 
 	CWusb = new CUSBaccess;
 	if (CWusb == NULL)
@@ -34,7 +35,29 @@ int main(int argc, char *argv[])
 	}
 
 	int devID;
-	int traffic = TL_none;
+
+	printf("%d", (int)argv[1][0]);
+	switch (argv[1][0])
+	{
+	case '2':
+		traffic &= ~TL_none;
+		traffic |= TL_red;
+		break;
+	case '1':
+		traffic &= ~TL_none;
+		traffic |= TL_yellow;
+		break;
+	case '0':
+		traffic &= ~TL_none;
+		traffic |= TL_green;
+		break;
+	case '3':
+		traffic &= ~TL_none;
+		break;
+	default:
+		printf("Illegal Argument");
+	}
+
 	for (devID = 0; ok && devID < USBcount; devID++)
 	{
 		if (traffic == TL_none)
