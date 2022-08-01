@@ -17,13 +17,14 @@ int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, C
 
 int main(int argc, char *argv[])
 {
-	int switchID[MAXSWITCH] = {CUSBaccess::SWITCH_0, 0, 0};
+	int switchID[MAXSWITCH] = {CUSBaccess::SWITCH_0, 0, 0}; // represent the three lights
 	CUSBaccess *CWusb = 0;
 	int ok = 1;
 	int USBcount = 1;
 	int state = -1;
-	int traffic = TL_none;
+	int traffic = TL_none; // represent the lamps color
 
+	// check if the lamp is plugged to the USB port
 	CWusb = new CUSBaccess;
 	if (CWusb == NULL)
 	{
@@ -31,25 +32,27 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		USBcount = CWusb->OpenCleware();
+		USBcount = CWusb->OpenCleware(); // open the device
 	}
 
-	int devID;
-
-	printf("%d", (int)argv[1][0]);
+	/* get the input value and modify the traffic value
+	0 = green
+	1 = yellow
+	2 = red
+	3 = off */
 	switch (argv[1][0])
 	{
-	case '2':
+	case '0':
 		traffic &= ~TL_none;
-		traffic |= TL_red;
+		traffic |= TL_green;
 		break;
 	case '1':
 		traffic &= ~TL_none;
 		traffic |= TL_yellow;
 		break;
-	case '0':
+	case '2':
 		traffic &= ~TL_none;
-		traffic |= TL_green;
+		traffic |= TL_red;
 		break;
 	case '3':
 		traffic &= ~TL_none;
@@ -58,34 +61,33 @@ int main(int argc, char *argv[])
 		printf("Illegal Argument");
 	}
 
-	for (devID = 0; ok && devID < USBcount; devID++)
+	// turn the lamp Off
+	if (traffic == TL_none)
 	{
-		if (traffic == TL_none)
+		for (int i = 0; i < MAXSWITCH; i++)
 		{
-			for (int i = 0; i < MAXSWITCH; i++)
-			{
-				if (switchID[i] == 0)
-					break;
-				ok = SetSwitch(devID, (enum CUSBaccess::SWITCH_IDs)switchID[i], 0, CWusb);
-			}
-		}
-		else
-		{
-			if (traffic & TL_red)
-				ok = SetSwitch(devID, CUSBaccess::SWITCH_0, 1, CWusb);
-			else
-				ok = SetSwitch(devID, CUSBaccess::SWITCH_0, 0, CWusb);
-			if (traffic & TL_green)
-				ok = SetSwitch(devID, CUSBaccess::SWITCH_2, 1, CWusb);
-			else
-				ok = SetSwitch(devID, CUSBaccess::SWITCH_2, 0, CWusb);
-			if (traffic & TL_yellow)
-				ok = SetSwitch(devID, CUSBaccess::SWITCH_1, 1, CWusb);
-			else
-				ok = SetSwitch(devID, CUSBaccess::SWITCH_1, 0, CWusb);
+			if (switchID[i] == 0)
+				break;
+			ok = SetSwitch(0, (enum CUSBaccess::SWITCH_IDs)switchID[i], 0, CWusb);
 		}
 	}
+	else // switch the lamps light using the SetSwitch Method
+	{
+		if (traffic & TL_red)
+			ok = SetSwitch(0, CUSBaccess::SWITCH_0, 1, CWusb);
+		else
+			ok = SetSwitch(0, CUSBaccess::SWITCH_0, 0, CWusb);
+		if (traffic & TL_green)
+			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 1, CWusb);
+		else
+			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 0, CWusb);
+		if (traffic & TL_yellow)
+			ok = SetSwitch(0, CUSBaccess::SWITCH_1, 1, CWusb);
+		else
+			ok = SetSwitch(0, CUSBaccess::SWITCH_1, 0, CWusb);
+	}
 
+	// close then delete the device
 	if (CWusb != NULL)
 	{
 		CWusb->CloseCleware();
@@ -98,6 +100,13 @@ int main(int argc, char *argv[])
 	return state;
 }
 
+/**
+ *turn one of the switchs On or Off
+ *
+ * @param devID the devices name (here only the lamp)
+ * @param switchID the switch that will be turned On or Off
+ * @param turnSwitch 1 = On and 0 = Off
+ */
 int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, CUSBaccess *CWusb)
 {
 	int ok = 0;
