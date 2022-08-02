@@ -10,7 +10,9 @@ enum tl_enum
 	TL_none = 1,
 	TL_red = 2,
 	TL_green = 4,
-	TL_yellow = 8
+	TL_yellow = 8,
+	TL_green_blink = 16,
+	TL_red_blink = 32
 };
 
 int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, CUSBaccess *CWusb);
@@ -22,7 +24,7 @@ int main(int argc, char *argv[])
 	int ok = 1;
 	int USBcount = 1;
 	int state = -1;
-	int traffic = TL_none; // represent the lamps color
+	int traffic = TL_none; // represent the lamps colors
 
 	// check if the lamp is plugged to the USB port
 	CWusb = new CUSBaccess;
@@ -56,6 +58,10 @@ int main(int argc, char *argv[])
 		break;
 	case '3':
 		traffic &= ~TL_none;
+		traffic |= TL_green_blink;
+		break;
+	case '4':
+		traffic &= ~TL_none;
 		break;
 	default:
 		printf("Illegal Argument");
@@ -77,10 +83,14 @@ int main(int argc, char *argv[])
 			ok = SetSwitch(0, CUSBaccess::SWITCH_0, 1, CWusb);
 		else
 			ok = SetSwitch(0, CUSBaccess::SWITCH_0, 0, CWusb);
+
 		if (traffic & TL_green)
 			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 1, CWusb);
+		else if (traffic & TL_green_blink)
+			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 18, CWusb);
 		else
 			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 0, CWusb);
+
 		if (traffic & TL_yellow)
 			ok = SetSwitch(0, CUSBaccess::SWITCH_1, 1, CWusb);
 		else
