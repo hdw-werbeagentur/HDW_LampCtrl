@@ -16,6 +16,7 @@ enum tl_enum
 };
 
 int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, CUSBaccess *CWusb);
+int CheckSwitch(int traffic, CUSBaccess *CWusb);
 
 int main(int argc, char *argv[])
 {
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 	{
 	case '0':
 		traffic &= ~TL_none;
-		traffic |= TL_green;
+		traffic |= TL_red;
 		break;
 	case '1':
 		traffic &= ~TL_none;
@@ -54,17 +55,18 @@ int main(int argc, char *argv[])
 		break;
 	case '2':
 		traffic &= ~TL_none;
-		traffic |= TL_red;
+		traffic |= TL_green;
 		break;
 	case '3':
-		traffic &= ~TL_none;
-		traffic |= TL_green_blink;
-		break;
-	case '4':
 		traffic &= ~TL_none;
 		break;
 	default:
 		printf("Illegal Argument");
+	}
+
+	if (CheckSwitch(traffic, CWusb))
+	{
+		exit(0);
 	}
 
 	// turn the lamp Off
@@ -86,8 +88,6 @@ int main(int argc, char *argv[])
 
 		if (traffic & TL_green)
 			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 1, CWusb);
-		else if (traffic & TL_green_blink)
-			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 18, CWusb);
 		else
 			ok = SetSwitch(0, CUSBaccess::SWITCH_2, 0, CWusb);
 
@@ -123,4 +123,15 @@ int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, C
 	if (CWusb != NULL)
 		ok = CWusb->SetSwitch(devID, switchID, turnSwitch);
 	return ok;
+}
+
+int CheckSwitch(int traffic, CUSBaccess *CWusb)
+{
+	if (traffic & TL_red)
+		return CWusb->GetSwitch(0, CUSBaccess::SWITCH_0);
+	if (traffic & TL_yellow)
+		return CWusb->GetSwitch(0, CUSBaccess::SWITCH_1);
+	if (traffic & TL_green)
+		return CWusb->GetSwitch(0, CUSBaccess::SWITCH_2);
+	return 0;
 }

@@ -1,18 +1,19 @@
 import requests
-import sched
-import time
 import os
 from urllib.request import urlopen
 from urllib.error import URLError
+from dotenv import load_dotenv, find_dotenv
 
-# the first scheduler for calling the function
-s = sched.scheduler(time.time, time.sleep)
+
+load_dotenv(find_dotenv('.env.development'))
+
+SCRIPT_CMD_PATH = os.getenv('SCRIPT_CMD_PATH')
+REMOTE_PSM_URL = os.getenv('REMOTE_PSM_URL')
 
 
 def callLamp(light_value):
     # calling the C++ script from the shell
-    cmd = 'sudo /home/pi/Documents/Cleware_USB/LampCtrl/lampCtrl ' + \
-        light_value
+    cmd = SCRIPT_CMD_PATH + light_value
     stream = os.popen(cmd)
 
 
@@ -22,22 +23,15 @@ def untilConnection():
             request = urlopen("http://www.google.com/", timeout=1)
             return
         except URLError:
-            callLamp("3")
             pass
 
 
-def request(sc):
+def getJSON():
     # get the global status value in the json using cURL
-    response = requests.get('http://192.168.1.116/status.json').json()
+    response = requests.get(REMOTE_PSM_URL).json()
 
     callLamp(str(response['status']))
 
-    # calling the function again for infinite loop
-    sc.enter(5, 1, request, (sc,))
-
 
 untilConnection()
-
-# 5s schedule calling the function for the 1st time
-s.enter(5, 1, request, (s,))
-s.run()
+getJSON()
