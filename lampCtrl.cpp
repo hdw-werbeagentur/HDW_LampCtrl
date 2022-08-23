@@ -37,9 +37,9 @@ int main(int argc, char *argv[])
 	}
 
 	/* get the input value and modify the traffic value
-	0 = green
+	0 = red
 	1 = yellow
-	2 = red
+	2 = green
 	3 = off */
 	switch (argv[1][0])
 	{
