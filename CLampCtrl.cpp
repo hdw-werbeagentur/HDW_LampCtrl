@@ -10,11 +10,7 @@ enum tl_enum
 	TL_none = 1,
 	TL_red = 2,
 	TL_green = 4,
-<<<<<<< HEAD:CLampCtrl.cpp
 	TL_yellow = 8
-=======
-	TL_yellow = 8,
->>>>>>> 0556cfab353771deaf95a8cd66194ccefad1e574:lampCtrl.cpp
 };
 
 int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, CUSBaccess *CWusb);
