@@ -3,10 +3,10 @@
 USBACCESSFILES = USBaccessBasic.o USBaccess.o
 USBACCESSHEADER = USBaccessDevTypes.h USBaccess.h USBaccessBasic.h
 
-all: USBaccess.a lampCtrl
+all: USBaccess.a CLampCtrl
 
-lampCtrl:  lampCtrl.cpp $(USBACCESSFILES) $(USBACCESSHEADER)
+CLampCtrl:  CLampCtrl.cpp $(USBACCESSFILES) $(USBACCESSHEADER)
 	gcc -g -DCLEWARELINUX -c USBaccessBasic.c $(CFLAGS) -o USBaccessBasic.o
 	g++ -g -DCLEWARELINUX -c USBaccess.cpp $(CFLAGS) -o USBaccess.o
-	g++ -g -DCLEWARELINUX -c lampCtrl.cpp $(CFLAGS) -o lampCtrl.o
-	g++ -g $(USBACCESSFILES)  lampCtrl.o -o lampCtrl
+	g++ -g -DCLEWARELINUX -c CLampCtrl.cpp $(CFLAGS) -o CLampCtrl.o
+	g++ -g $(USBACCESSFILES)  CLampCtrl.o -o CLampCtrl

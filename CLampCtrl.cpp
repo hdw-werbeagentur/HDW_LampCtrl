@@ -10,9 +10,7 @@ enum tl_enum
 	TL_none = 1,
 	TL_red = 2,
 	TL_green = 4,
-	TL_yellow = 8,
-	TL_green_blink = 16,
-	TL_red_blink = 32
+	TL_yellow = 8
 };
 
 int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, CUSBaccess *CWusb);
