@@ -10,7 +10,11 @@ enum tl_enum
 	TL_none = 1,
 	TL_red = 2,
 	TL_green = 4,
+<<<<<<< HEAD:CLampCtrl.cpp
 	TL_yellow = 8
+=======
+	TL_yellow = 8,
+>>>>>>> 0556cfab353771deaf95a8cd66194ccefad1e574:lampCtrl.cpp
 };
 
 int SetSwitch(int devID, enum CUSBaccess::SWITCH_IDs switchID, int turnSwitch, CUSBaccess *CWusb);
@@ -37,9 +41,9 @@ int main(int argc, char *argv[])
 	}
 
 	/* get the input value and modify the traffic value
-	0 = green
+	0 = red
 	1 = yellow
-	2 = red
+	2 = green
 	3 = off */
 	switch (argv[1][0])
 	{
