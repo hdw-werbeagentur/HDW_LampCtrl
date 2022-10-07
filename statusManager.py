@@ -5,7 +5,7 @@ from urllib.error import URLError
 from dotenv import load_dotenv, find_dotenv
 
 
-load_dotenv(find_dotenv('.env.development'))
+load_dotenv(find_dotenv('.env'))
 
 SCRIPT_CMD_PATH = os.getenv('SCRIPT_CMD_PATH')
 REMOTE_PSM_URL = os.getenv('REMOTE_PSM_URL')
